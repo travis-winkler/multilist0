@@ -12,13 +12,15 @@
     "dev": "npm run dev -w @multilist0/web",
     "dev:extension": "npm run dev -w @multilist0/extension",
     "build": "npm run build --workspaces",
-    "typecheck": "npm run typecheck --workspaces"
+    "typecheck": "npm run typecheck --workspaces",
+    "test:e2e": "playwright test"
   },
   "devDependencies": {
-    "typescript": "7.0.2",
-    "vite": "8.3.6",
-    "@vitejs/plugin-react": "6.2.1",
+    "@playwright/test": "^1.65.0",
     "@types/react": "^19.0.0",
-    "@types/react-dom": "^19.0.0"
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "6.2.1",
+    "typescript": "7.0.2",
+    "vite": "8.3.6"
   }
 }

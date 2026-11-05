@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Multilist0",
+  "name": "MultiList",
   "version": "0.1.0",
-  "description": "Multilist0 Chrome extension starter.",
+  "description": "MultiList browser companion. Interface preview; secure pairing and Depop execution are not yet available.",
   "action": {
     "default_popup": "index.html"
   }
