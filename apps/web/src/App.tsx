@@ -9,9 +9,10 @@ import {
   type Draft,
 } from "./model";
 
-type Page = "home" | "tasks" | "settings" | "account" | "connection";
+type Page = "home" | "actions" | "tasks" | "settings" | "account" | "connection";
 const navigation: { id: Page; label: string; icon: IconName }[] = [
   { id: "home", label: "Overview", icon: "home" },
+  { id: "actions", label: "Actions", icon: "list" },
   { id: "tasks", label: "Tasks", icon: "tasks" },
   { id: "settings", label: "Settings", icon: "settings" },
   { id: "account", label: "Account", icon: "account" },
@@ -103,6 +104,7 @@ export function App() {
       "Your shop, in a little more harmony.",
       "A thoughtful workspace for your Depop routine.",
     ],
+    actions: ["Shop actions", "Your everyday toolkit for managing your shop."],
     tasks: [
       "Your task activity",
       "One place to follow what’s happening in your shop.",
@@ -211,11 +213,12 @@ export function App() {
             <Icon name="chevron" size={14} />
           </button>
         </header>
-        <main id="main-content">
+        <main id="main-content" className={page === "home" ? "overview-page" : undefined}>
+          {page !== "home" && <>
           <div className="page-heading">
             <div>
               <div className="eyebrow">
-                {page === "home" ? "WELCOME TO MULTILIST" : "YOUR WORKSPACE"}
+                YOUR WORKSPACE
               </div>
               <h1>{titles[page][0]}</h1>
               <p>{titles[page][1]}</p>
@@ -232,6 +235,7 @@ export function App() {
               View status <Icon name="arrow" size={15} />
             </button>
           </div>
+          </>}
           {notice && (
             <div role="status" className="notice">
               <Icon name="check" size={17} />
@@ -242,7 +246,6 @@ export function App() {
             <p role="alert">{settingsError || draftsError}</p>
           )}
           {page === "home" && (
-            <>
               <div className="summary-grid">
                 <Summary
                   label="DEPOP ACCOUNT"
@@ -263,12 +266,9 @@ export function App() {
                   icon="clock"
                 />
               </div>
-              <div className="overview-grid">
-                <section>
-                  <div className="section-heading">
-                    <h2>Shop actions</h2>
-                    <span>YOUR EVERYDAY TOOLKIT</span>
-                  </div>
+          )}
+          {page === "actions" && (
+            <section aria-label="Shop actions">
                   <div className="action-sections">
                     {sections.map((s) => {
                       const open = expanded.includes(s.title);
@@ -334,56 +334,7 @@ export function App() {
                       );
                     })}
                   </div>
-                </section>
-                <aside className="right-column">
-                  <section className="connection-card">
-                    <span className="line-icon">
-                      <Icon name="link" size={26} />
-                    </span>
-                    <div className="eyebrow">BETTER, TOGETHER</div>
-                    <h2>
-                      Your shop.
-                      <br />
-                      Your browser.
-                      <br />
-                      One workspace.
-                    </h2>
-                    <p>
-                      Manage everything here. The Chrome extension will carry
-                      out supported tasks in your authenticated Depop tab.
-                    </p>
-                    <button
-                      className="primary-button"
-                      onClick={() => go("connection")}
-                    >
-                      Set up your connection <Icon name="arrow" size={17} />
-                    </button>
-                    <span className="quiet-note">
-                      Integration coming in the next stage
-                    </span>
-                  </section>
-                  <section className="activity-card">
-                    <div className="section-heading">
-                      <h2>Recent activity</h2>
-                      <Icon name="clock" size={18} />
-                    </div>
-                    <div className="empty-mini">
-                      <span className="empty-ring">
-                        <Icon name="tasks" size={22} />
-                      </span>
-                      <h3>A fresh start</h3>
-                      <p>
-                        Real task updates will appear here once execution is
-                        supported.
-                      </p>
-                    </div>
-                    <button className="text-button" onClick={() => go("tasks")}>
-                      View all tasks <Icon name="arrow" size={16} />
-                    </button>
-                  </section>
-                </aside>
-              </div>
-            </>
+            </section>
           )}
           {page === "tasks" && (
             <section className="panel task-panel">
@@ -728,7 +679,7 @@ export function App() {
           ) : modal === "Help & documentation" ? (
             <>
               <p>
-                This is the first interface stage of MultiList. Use Overview for
+                This is the first interface stage of MultiList. Use Actions for
                 the action toolkit, Tasks for status views and local drafts,
                 Settings for preferences, and Account for connection status.
               </p>

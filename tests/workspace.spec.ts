@@ -6,9 +6,20 @@ test("prototype actions explain unavailable integration and navigate to connecti
   const errors: string[] = [];
   page.on("pageerror", (e) => errors.push(e.message));
   await page.goto("/app/");
-  await expect(
-    page.getByRole("heading", { name: "Your shop, in a little more harmony." }),
-  ).toBeVisible();
+  await expect(page.locator(".summary-card")).toHaveCount(3);
+  await expect(page.locator("#main-content .page-heading")).toHaveCount(0);
+  await expect(page.locator("#main-content .preview-note")).toHaveCount(0);
+  await expect(page.locator("#main-content .action-sections")).toHaveCount(0);
+  await expect(page.locator("#main-content .right-column")).toHaveCount(0);
+  await expect(page.locator(".topbar")).toBeVisible();
+  await expect(page.locator(".page-footer")).toBeVisible();
+  await page.getByRole("link", {name: "Actions", exact: true}).click();
+  await expect(page).toHaveURL(/\/app\/actions$/);
+  await page.reload();
+  await expect(page.getByRole("heading", { name: "Shop actions" })).toBeVisible();
+  for (const title of ["Listings", "Likes", "Followers", "Messages"]) {
+    await expect(page.locator(".accordion-toggle").filter({hasText: title})).toBeVisible();
+  }
   await expect(
     page.getByRole("button", { name: "Bump Items", exact: true }),
   ).toBeVisible();
@@ -20,7 +31,7 @@ test("prototype actions explain unavailable integration and navigate to connecti
   await expect(
     page.getByRole("button", { name: "Like Products", exact: true }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "Set up your connection" }).click();
+  await page.getByRole("button", { name: "View status", exact: true }).click();
   await expect(page).toHaveURL(/\/app\/connection$/);
   await expect(
     page.getByRole("heading", { name: "What works today" }),
@@ -109,7 +120,7 @@ test("account never fabricates authentication and survives corrupt stored prefer
 test("mobile menu and desktop layout fit the viewport", async ({ page }) => {
   for (const width of [1440, 768, 390, 320]) {
     await page.setViewportSize({ width, height: 1000 });
-    await page.goto("/app/");
+    await page.goto("/app/actions");
     expect(
       await page.evaluate(
         () => document.documentElement.scrollWidth <= window.innerWidth,

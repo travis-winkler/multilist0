@@ -11,7 +11,7 @@ npm ci
 npm run dev
 ```
 
-The web workspace is served at `/app/` on Vite's reported port. Navigation supports `/app/tasks`, `/app/settings`, `/app/account`, and `/app/connection`, including direct entry and browser back/forward.
+The web workspace is served at `/app/` on Vite's reported port. Navigation supports `/app/actions`, `/app/tasks`, `/app/settings`, `/app/account`, and `/app/connection`, including direct entry and browser back/forward.
 
 ```sh
 npm run typecheck
@@ -41,7 +41,8 @@ The popup links to `https://multilist.pro/app/`. That destination requires separ
 
 | Capability | Current behavior |
 | --- | --- |
-| Overview | Expandable Listings, Likes, Followers, and Messages; action buttons explain unavailable capabilities |
+| Overview | Only the Depop account, active tasks, and schedule drafts summary cards |
+| Actions | Expandable Listings, Likes, Followers, and Messages; action buttons explain unavailable capabilities |
 | Navigation | Responsive sidebar, mobile menu, URL navigation and browser history |
 | Tasks | Empty All/Active/Scheduled/Completed views; no fabricated task results |
 | Schedule drafts | Create/delete browser-local drafts; never enabled, queued, or executed |

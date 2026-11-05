@@ -1168,3 +1168,7 @@ dialog p {
     padding: 40px 6px;
   }
 }
+
+.overview-page { min-height: calc(100dvh - 79px); display: flex; flex-direction: column; }
+.overview-page .page-footer { margin-top: auto; }
+@media (max-width: 680px) { .overview-page { min-height: calc(100dvh - 65px); } }
