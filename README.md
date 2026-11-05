@@ -11,7 +11,7 @@ npm ci
 npm run dev
 ```
 
-The web workspace is served at `/app/` on Vite's reported port. Navigation supports `/app/actions`, `/app/tasks`, `/app/settings`, `/app/account`, and `/app/connection`, including direct entry and browser back/forward.
+The web workspace is served at `/app/` on Vite's reported port. Navigation supports `/app/actions`, `/app/tasks`, `/app/settings`, `/app/account`, and `/app/connection`, `/app/help`, `/app/documentation`, `/app/privacy`, and `/app/terms`, including direct entry and browser back/forward.
 
 ```sh
 npm run typecheck
@@ -48,9 +48,11 @@ The popup links to `https://multilist.pro/app/`. That destination requires separ
 | Schedule drafts | Create/delete browser-local drafts; never enabled, queued, or executed |
 | Settings | Animation toggle, timing preferences, smart-speed preference, and reset; stored locally |
 | Account | Explicit unsigned-in status; account and subscription actions explain limitations |
-| Connection | Requirements and implementation status; never reports a paired extension |
+| Connection | Installation detection unavailable; disconnected extension/Depop states; Connect reports a real unsupported-operation error; Disconnect disabled with no connection |
+| Top-right Depop account | Accessible disclosure with separate logout notices; no profile is injected. The reusable component accepts verified profile data for a future integration, but none is available today |
+| Footer | Help, Documentation, Privacy Policy, and Terms & Conditions across all pages; legal pages are unpublished placeholders |
 | Chrome popup | Branded informational popup; built assets rendered in Chromium over HTTP |
-| Authentication and billing | Not implemented |
+| Authentication and billing | Not implemented; logout controls explain there is no session/account to change |
 | App/extension bridge | Not implemented; no secure pairing or live status synchronization |
 | Depop listing and social actions | Not implemented; each action requires support verification and tested execution |
 | Active scheduling | Not implemented; drafts are not tasks |
@@ -70,3 +72,5 @@ Before a later integration stage, implement and test authenticated pairing, an e
 - `apps/web/src/model.ts`: validated local storage and settings defaults
 - `apps/extension`: independently built Chrome popup and manifest
 - `tests`: browser workflow and extension tests
+
+The account disclosure supports Enter/Space to open, Tab through actions, Escape to close and restore focus, and outside-click dismissal. No credentials or tokens are stored or sent. Separate MultiList logout and Depop disconnect require separate future session integrations; neither is simulated. Nine browser tests currently cover the interface and built popup. Existing hosted legal pages and the landing site are untouched.

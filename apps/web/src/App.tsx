@@ -9,7 +9,23 @@ import {
   type Draft,
 } from "./model";
 
-type Page = "home" | "actions" | "tasks" | "settings" | "account" | "connection";
+import { DepopAccount } from "./components/DepopAccount";
+import { Connectivity } from "./components/Connectivity";
+import {
+  Footer,
+  InformationPage,
+  footerLinks,
+  type FooterPage,
+} from "./components/Footer";
+
+type Page =
+  | FooterPage
+  | "home"
+  | "actions"
+  | "tasks"
+  | "settings"
+  | "account"
+  | "connection";
 const navigation: { id: Page; label: string; icon: IconName }[] = [
   { id: "home", label: "Overview", icon: "home" },
   { id: "actions", label: "Actions", icon: "list" },
@@ -50,7 +66,11 @@ const sections: {
 ];
 function readPage(): Page {
   const part = window.location.pathname.replace(/\/$/, "").split("/")[2];
-  return [...navigation.map((n) => n.id), "connection"].includes(part)
+  return [
+    ...navigation.map((n) => n.id),
+    ...footerLinks.map((n) => n.id),
+    "connection",
+  ].includes(part)
     ? (part as Page)
     : "home";
 }
@@ -104,6 +124,10 @@ export function App() {
       "Your shop, in a little more harmony.",
       "A thoughtful workspace for your Depop routine.",
     ],
+    help: ["Help", "Find your way around MultiList."],
+    documentation: ["Documentation", "Development and setup instructions."],
+    privacy: ["Privacy Policy", "Unpublished placeholder"],
+    terms: ["Terms & Conditions", "Unpublished placeholder"],
     actions: ["Shop actions", "Your everyday toolkit for managing your shop."],
     tasks: [
       "Your task activity",
@@ -205,37 +229,41 @@ export function App() {
             <strong>
               {page === "connection"
                 ? "Connection"
-                : navigation.find((n) => n.id === page)?.label}
+                : (navigation.find((n) => n.id === page)?.label ??
+                  footerLinks.find((n) => n.id === page)?.label)}
             </strong>
           </div>
-          <button className="connection-pill" onClick={() => go("connection")}>
-            <span className="status-dot" /> Extension not connected{" "}
-            <Icon name="chevron" size={14} />
-          </button>
+          <DepopAccount
+            profile={null}
+            onMultiListLogout={() => setModal("Log out of MultiList")}
+            onDepopLogout={() => setModal("Log out of Depop")}
+          />
         </header>
-        <main id="main-content" className={page === "home" ? "overview-page" : undefined}>
-          {page !== "home" && <>
-          <div className="page-heading">
-            <div>
-              <div className="eyebrow">
-                YOUR WORKSPACE
+        <main
+          id="main-content"
+          className={page === "home" ? "overview-page" : undefined}
+        >
+          {page !== "home" && (
+            <>
+              <div className="page-heading">
+                <div>
+                  <h1>{titles[page][0]}</h1>
+                  <p>{titles[page][1]}</p>
+                </div>
+                <span className="stage-tag">Interface preview</span>
               </div>
-              <h1>{titles[page][0]}</h1>
-              <p>{titles[page][1]}</p>
-            </div>
-            <span className="stage-tag">Interface preview</span>
-          </div>
-          <div className="preview-note">
-            <Icon name="link" size={17} />
-            <span>
-              You're exploring the interface. Depop connection and task
-              execution are not available yet.
-            </span>
-            <button onClick={() => go("connection")}>
-              View status <Icon name="arrow" size={15} />
-            </button>
-          </div>
-          </>}
+              <div className="preview-note">
+                <Icon name="link" size={17} />
+                <span>
+                  You're exploring the interface. Depop connection and task
+                  execution are not available yet.
+                </span>
+                <button onClick={() => go("connection")}>
+                  View status <Icon name="arrow" size={15} />
+                </button>
+              </div>
+            </>
+          )}
           {notice && (
             <div role="status" className="notice">
               <Icon name="check" size={17} />
@@ -246,94 +274,94 @@ export function App() {
             <p role="alert">{settingsError || draftsError}</p>
           )}
           {page === "home" && (
-              <div className="summary-grid">
-                <Summary
-                  label="DEPOP ACCOUNT"
-                  value="Not connected"
-                  text="Your shop will appear here"
-                  icon="account"
-                />
-                <Summary
-                  label="ACTIVE TASKS"
-                  value="0"
-                  text="Nothing running right now"
-                  icon="refresh"
-                />
-                <Summary
-                  label="SCHEDULE DRAFTS"
-                  value={String(drafts.length)}
-                  text="Saved locally · not enabled"
-                  icon="clock"
-                />
-              </div>
+            <div className="summary-grid">
+              <Summary
+                label="DEPOP ACCOUNT"
+                value="Not connected"
+                text="Your shop will appear here"
+                icon="account"
+              />
+              <Summary
+                label="ACTIVE TASKS"
+                value="0"
+                text="Nothing running right now"
+                icon="refresh"
+              />
+              <Summary
+                label="SCHEDULE DRAFTS"
+                value={String(drafts.length)}
+                text="Saved locally · not enabled"
+                icon="clock"
+              />
+            </div>
           )}
           {page === "actions" && (
             <section aria-label="Shop actions">
-                  <div className="action-sections">
-                    {sections.map((s) => {
-                      const open = expanded.includes(s.title);
-                      return (
-                        <section
-                          className={`action-section ${open ? "expanded" : ""}`}
-                          key={s.title}
-                        >
-                          <button
-                            className="accordion-toggle"
-                            aria-expanded={open}
-                            aria-controls={`section-${s.title}`}
-                            onClick={() =>
-                              setExpanded(
-                                open
-                                  ? expanded.filter((v) => v !== s.title)
-                                  : [...expanded, s.title],
-                              )
-                            }
-                          >
-                            <span className="section-icon">
-                              <Icon name={s.icon} />
-                            </span>
-                            <span>
-                              <strong>{s.title}</strong>
-                              <small>{s.description}</small>
-                            </span>
-                            <Icon name="chevron" size={17} />
-                          </button>
-                          <div id={`section-${s.title}`} hidden={!open}>
-                            <div className="action-buttons">
-                              {s.actions.map((a, i) => (
-                                <button
-                                  className={
-                                    a.startsWith("Auto")
-                                      ? "action-button accent"
-                                      : "action-button"
-                                  }
-                                  key={a}
-                                  onClick={() => setModal(a)}
-                                >
-                                  <Icon
-                                    name={
-                                      a.startsWith("Auto")
-                                        ? "clock"
-                                        : i === 0
-                                          ? "refresh"
-                                          : s.icon
-                                    }
-                                    size={18}
-                                  />
-                                  <span>{a}</span>
-                                  <Icon name="arrow" size={16} />
-                                </button>
-                              ))}
-                            </div>
-                            <p className="action-footnote">
-                              Connection required · availability will be
-                              verified per action
-                            </p>
-                          </div>
-                        </section>
-                      );
-                    })}
-                  </div>
+              <div className="action-sections">
+                {sections.map((s) => {
+                  const open = expanded.includes(s.title);
+                  return (
+                    <section
+                      className={`action-section ${open ? "expanded" : ""}`}
+                      key={s.title}
+                    >
+                      <button
+                        className="accordion-toggle"
+                        aria-expanded={open}
+                        aria-controls={`section-${s.title}`}
+                        onClick={() =>
+                          setExpanded(
+                            open
+                              ? expanded.filter((v) => v !== s.title)
+                              : [...expanded, s.title],
+                          )
+                        }
+                      >
+                        <span className="section-icon">
+                          <Icon name={s.icon} />
+                        </span>
+                        <span>
+                          <strong>{s.title}</strong>
+                          <small>{s.description}</small>
+                        </span>
+                        <Icon name="chevron" size={17} />
+                      </button>
+                      <div id={`section-${s.title}`} hidden={!open}>
+                        <div className="action-buttons">
+                          {s.actions.map((a, i) => (
+                            <button
+                              className={
+                                a.startsWith("Auto")
+                                  ? "action-button accent"
+                                  : "action-button"
+                              }
+                              key={a}
+                              onClick={() => setModal(a)}
+                            >
+                              <Icon
+                                name={
+                                  a.startsWith("Auto")
+                                    ? "clock"
+                                    : i === 0
+                                      ? "refresh"
+                                      : s.icon
+                                }
+                                size={18}
+                              />
+                              <span>{a}</span>
+                              <Icon name="arrow" size={16} />
+                            </button>
+                          ))}
+                        </div>
+                        <p className="action-footnote">
+                          Connection required · availability will be verified
+                          per action
+                        </p>
+                      </div>
+                    </section>
+                  );
+                })}
+              </div>
             </section>
           )}
           {page === "tasks" && (
@@ -543,41 +571,37 @@ export function App() {
           )}
           {page === "connection" && (
             <div className="settings-grid">
-              <section className="panel">
-                <div className="panel-heading">
-                  <h2>Chrome extension</h2>
-                  <span className="badge">Not connected</span>
-                </div>
-                <p>
-                  The extension currently contains an informational popup. This
-                  web app cannot detect or pair with it yet.
-                </p>
-                <ol className="steps">
-                  <li>
-                    <strong>Build and load the extension</strong>
-                    <p>
-                      Run <code>npm run build</code>, open{" "}
-                      <code>chrome://extensions</code>, enable Developer mode,
-                      and load <code>apps/extension/dist</code>.
-                    </p>
-                  </li>
-                  <li>
-                    <strong>Securely pair your workspace</strong>
-                    <p>
-                      Not implemented. Pairing, origin validation, and
-                      authenticated messaging will be built and tested in a
-                      later stage.
-                    </p>
-                  </li>
-                  <li>
-                    <strong>Connect an authenticated Depop tab</strong>
-                    <p>
-                      Not implemented. No browser sessions, listings, or account
-                      data are read in this version.
-                    </p>
-                  </li>
-                </ol>
-              </section>
+              <div className="connection-column">
+                <Connectivity />
+                <section className="panel">
+                  <h2>Extension setup</h2>
+                  <ol className="steps">
+                    <li>
+                      <strong>Build and load the extension</strong>
+                      <p>
+                        Run <code>npm run build</code>, open{" "}
+                        <code>chrome://extensions</code>, enable Developer mode,
+                        and load <code>apps/extension/dist</code>.
+                      </p>
+                    </li>
+                    <li>
+                      <strong>Securely pair your workspace</strong>
+                      <p>
+                        Not implemented. Pairing, origin validation, and
+                        authenticated messaging will be built and tested in a
+                        later stage.
+                      </p>
+                    </li>
+                    <li>
+                      <strong>Connect an authenticated Depop tab</strong>
+                      <p>
+                        Not implemented. No browser sessions, listings, or
+                        account data are read in this version.
+                      </p>
+                    </li>
+                  </ol>
+                </section>
+              </div>
               <section className="panel">
                 <h2>What works today</h2>
                 <ul className="capabilities">
@@ -604,13 +628,10 @@ export function App() {
               </section>
             </div>
           )}
-          <footer className="page-footer">
-            <span>MultiList · Made for your next chapter.</span>
-            <span>
-              Web workspace <span className="footer-dot">·</span> Chrome
-              companion
-            </span>
-          </footer>
+          {footerLinks.some((link) => link.id === page) && (
+            <InformationPage page={page as FooterPage} />
+          )}
+          <Footer onNavigate={go} />
         </main>
       </div>
       {modal && (
@@ -676,6 +697,18 @@ export function App() {
                 </button>
               </div>
             </>
+          ) : modal === "Log out of MultiList" ? (
+            <p>
+              MultiList authentication is not implemented. You are not signed
+              in, so there is no session to end. No Depop connection or local
+              preferences were changed.
+            </p>
+          ) : modal === "Log out of Depop" ? (
+            <p>
+              No Depop account is connected. Account disconnection is not
+              implemented yet. No MultiList session or browser Depop login was
+              changed.
+            </p>
           ) : modal === "Help & documentation" ? (
             <>
               <p>
@@ -685,8 +718,9 @@ export function App() {
               </p>
               <p>
                 For developer setup and Chrome loading instructions, see the
-                repository README. Support contact and legal pages are not
-                configured in this app; existing hosted pages are unchanged.
+                repository README. Support contact is not configured. Legal
+                placeholders are available in the footer; existing hosted pages
+                are unchanged.
               </p>
             </>
           ) : (
