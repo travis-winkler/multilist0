@@ -9,7 +9,13 @@ export function formatWelcomeDate(date: Date) {
     day: "numeric",
   }).format(date);
 }
-export function WelcomeBanner({ profile }: { profile: DepopProfile | null }) {
+export function WelcomeBanner({
+  profile,
+  onConnect,
+}: {
+  profile: DepopProfile | null;
+  onConnect: () => void;
+}) {
   const [now, setNow] = useState(() => new Date());
   const [failed, setFailed] = useState(false);
   useEffect(() => {
@@ -38,11 +44,18 @@ export function WelcomeBanner({ profile }: { profile: DepopProfile | null }) {
             </span>
           )}
           <div>
-            <strong>
-              {profile
-                ? profile.displayName?.trim() || `@${profile.username}`
-                : "Depop not connected"}
-            </strong>
+            {profile ? (
+              <strong>
+                {profile.displayName?.trim() || `@${profile.username}`}
+              </strong>
+            ) : (
+              <button
+                className="primary-button welcome-connect"
+                onClick={onConnect}
+              >
+                Connect your Depop
+              </button>
+            )}
             <p>
               {profile
                 ? `@${profile.username}`

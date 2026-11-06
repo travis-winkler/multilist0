@@ -12,6 +12,7 @@ test("welcome date uses weekday, month, and day; verified names render without i
   );
   const html = renderToStaticMarkup(
     createElement(WelcomeBanner, {
+      onConnect() {},
       profile: {
         username: "test-fixture",
         displayName: "Fixture name",
@@ -22,9 +23,9 @@ test("welcome date uses weekday, month, and day; verified names render without i
   expect(html).toContain("Fixture name");
   expect(html).toContain("https://example.invalid/avatar.png");
   const disconnected = renderToStaticMarkup(
-    createElement(WelcomeBanner, { profile: null }),
+    createElement(WelcomeBanner, { profile: null, onConnect() {} }),
   );
-  expect(disconnected).toContain("Depop not connected");
+  expect(disconnected).toContain("Connect your Depop");
   expect(disconnected).not.toContain("<img");
 });
 
@@ -39,7 +40,7 @@ test("Home has welcome banner and consistently slim footer; descriptions open vi
     page.getByRole("heading", { name: "Welcome to MultiList" }),
   ).toBeVisible();
   await expect(page.locator(".welcome-profile")).toContainText(
-    "Depop not connected",
+    "Connect your Depop",
   );
   await expect(page.locator(".welcome-banner time")).toHaveText(
     /^(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday), [A-Z][a-z]+ \d{1,2}$/,
@@ -87,4 +88,44 @@ test("Home has welcome banner and consistently slim footer; descriptions open vi
       () => document.documentElement.scrollWidth <= innerWidth,
     ),
   ).toBe(true);
+});
+
+test("Home cards fill the desktop viewport without scrolling and connect buttons open Depop Connection", async ({
+  page,
+}) => {
+  for (const [width, height] of [
+    [1440, 900],
+    [1366, 768],
+    [1024, 768],
+  ]) {
+    await page.setViewportSize({ width, height });
+    await page.goto("/app/");
+    await expect(page.locator(".home-metrics .summary-card")).toHaveCount(3);
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollHeight <= innerHeight,
+      ),
+    ).toBe(true);
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+    ).toBe(true);
+    const footer = (await page.locator(".page-footer").boundingBox())!;
+    expect(footer.y + footer.height).toBeLessThanOrEqual(height);
+    const boxes = await page.locator(".home-metrics .summary-card").all();
+    for (const box of boxes)
+      expect((await box.boundingBox())!.height).toBeGreaterThan(250);
+  }
+  for (const scope of [".welcome-banner", ".topbar"]) {
+    await page.goto("/app/");
+    await page
+      .locator(scope)
+      .getByRole("button", { name: "Connect your Depop", exact: true })
+      .click();
+    await expect(page).toHaveURL(/\/app\/account$/);
+    await expect(
+      page.getByRole("link", { name: "Depop Connection", exact: true }),
+    ).toHaveAttribute("aria-current", "page");
+  }
 });

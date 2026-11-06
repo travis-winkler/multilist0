@@ -58,7 +58,7 @@ test("account disclosure supports keyboard, outside dismissal, and separate logo
   page,
 }) => {
   await page.goto("/app/");
-  const trigger = page.getByRole("button", { name: "Depop not connected" });
+  const trigger = page.getByRole("button", { name: "Account options" });
   await trigger.focus();
   await page.keyboard.press("Enter");
   await expect(trigger).toHaveAttribute("aria-expanded", "true");
@@ -88,7 +88,11 @@ test("account disclosure supports keyboard, outside dismissal, and separate logo
     "No MultiList session or browser Depop login was changed",
   );
   await page.keyboard.press("Escape");
-  await expect(trigger).toContainText("Depop not connected");
+  await expect(
+    page
+      .getByRole("button", { name: "Connect your Depop", exact: true })
+      .first(),
+  ).toBeVisible();
   await expect(page.locator(".depop-avatar")).toHaveCount(0);
 });
 

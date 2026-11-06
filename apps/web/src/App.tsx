@@ -268,6 +268,7 @@ export function App({
             </button>
             <DepopAccount
               profile={verifiedDepopProfile}
+              onConnect={() => go("account")}
               onMultiListLogout={() => setModal("Log out of MultiList")}
               onDepopLogout={() => setModal("Log out of Depop")}
             />
@@ -303,7 +304,10 @@ export function App({
           )}
           {page === "home" && (
             <>
-              <WelcomeBanner profile={verifiedDepopProfile} />
+              <WelcomeBanner
+                profile={verifiedDepopProfile}
+                onConnect={() => go("account")}
+              />
               <HomeAnalytics onPeriod={(period) => go("analytics", period)} />
             </>
           )}

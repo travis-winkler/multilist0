@@ -12,10 +12,12 @@ export function DepopAccount({
   profile,
   onMultiListLogout,
   onDepopLogout,
+  onConnect,
 }: {
   profile: DepopProfile | null;
   onMultiListLogout: () => void;
   onDepopLogout: () => void;
+  onConnect: () => void;
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -47,25 +49,39 @@ export function DepopAccount({
         if (!e.currentTarget.contains(e.relatedTarget as Node)) setOpen(false);
       }}
     >
+      {!profile && (
+        <button
+          className="connection-pill connect-depop-button"
+          onClick={() => {
+            setOpen(false);
+            onConnect();
+          }}
+        >
+          <Icon name="account" size={20} />
+          Connect your Depop
+        </button>
+      )}
       <button
         ref={trigger}
         className="connection-pill account-trigger"
+        aria-label={!profile ? "Account options" : undefined}
         aria-expanded={open}
         aria-controls="depop-account-dropdown"
         onClick={() => setOpen(!open)}
       >
-        {safeAvatar && !imageFailed ? (
-          <img
-            className="depop-avatar"
-            src={safeAvatar}
-            alt=""
-            referrerPolicy="no-referrer"
-            onError={() => setImageFailed(true)}
-          />
-        ) : (
-          <Icon name="account" size={20} />
-        )}
-        <span>{profile ? `@${profile.username}` : "Depop not connected"}</span>
+        {profile &&
+          (safeAvatar && !imageFailed ? (
+            <img
+              className="depop-avatar"
+              src={safeAvatar}
+              alt=""
+              referrerPolicy="no-referrer"
+              onError={() => setImageFailed(true)}
+            />
+          ) : (
+            <Icon name="account" size={20} />
+          ))}
+        {profile && <span>@{profile.username}</span>}
         <Icon name="chevron" size={14} />
       </button>
       {open && (

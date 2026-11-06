@@ -1736,3 +1736,64 @@ main > :nth-last-child(2) {
     text-align: left;
   }
 }
+
+.depop-account {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.connect-depop-button {
+  white-space: nowrap;
+}
+.welcome-connect {
+  padding: 9px 13px;
+}
+@media (min-width: 681px) and (min-height: 700px) {
+  .app-shell:has(.overview-page) {
+    height: 100dvh;
+    min-height: 100dvh;
+  }
+  .overview-page .welcome-banner {
+    flex-shrink: 0;
+  }
+  .overview-page .home-metrics {
+    flex: 1;
+    min-height: 0;
+    margin-bottom: 20px;
+    align-items: stretch;
+  }
+  .overview-page .summary-card {
+    min-height: 0;
+  }
+  .overview-page .analytics-metric > div {
+    display: flex;
+    flex-direction: column;
+  }
+  .overview-page .analytics-metric strong {
+    margin-top: 16px;
+    padding-top: 0;
+    font-size: clamp(32px, 4vw, 54px);
+  }
+  .overview-page .weekly-sales {
+    justify-content: flex-start;
+  }
+  .overview-page .weekly-sales > strong {
+    margin-top: 16px;
+    font-size: clamp(32px, 4vw, 54px);
+  }
+  .overview-page .weekly-days {
+    flex: 1;
+    min-height: 35px;
+  }
+  .overview-page .weekly-guide {
+    flex: 1;
+    height: auto;
+    min-height: 20px;
+  }
+  .overview-page .weekly-days li {
+    min-height: 0;
+  }
+  .overview-page .page-footer {
+    flex-shrink: 0;
+  }
+}
