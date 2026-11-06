@@ -12,7 +12,7 @@ export function Footer({
 }) {
   return (
     <footer className="page-footer">
-      <span>MultiList · Made for your next chapter.</span>
+      <span>MultiList · Automate your Depop.</span>
       <nav aria-label="Footer navigation">
         {footerLinks.map((link) => (
           <a

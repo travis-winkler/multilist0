@@ -230,9 +230,6 @@ export function App({
             <span>?</span> Help & documentation{" "}
             <Icon name="external" size={14} />
           </button>
-          <div className="sidebar-footer">
-            A little less busy. A little more you.
-          </div>
         </div>
       </aside>
       {menu && (
