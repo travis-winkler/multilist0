@@ -45,7 +45,7 @@ export function InformationPage({ page }: { page: FooterPage }) {
       <section className="panel">
         <h2>Using MultiList</h2>
         <p>
-          Overview shows your shop summary. Actions contains the planned shop
+          Home shows your shop summary. Actions contains the planned shop
           toolkit. Tasks contains local schedule drafts; drafts never execute.
           Settings saves preferences on this browser. Connection explains
           integration availability.

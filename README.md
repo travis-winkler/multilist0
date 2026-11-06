@@ -41,7 +41,7 @@ The popup links to `https://multilist.pro/app/`. That destination requires separ
 
 | Capability | Current behavior |
 | --- | --- |
-| Overview | Only the Depop account, active tasks, and schedule drafts summary cards |
+| Home | Only the Depop account, active tasks, and schedule drafts summary cards |
 | Actions | Expandable Listings, Likes, Followers, and Messages; action buttons explain unavailable capabilities |
 | Navigation | Responsive sidebar, mobile menu, URL navigation and browser history |
 | Tasks | Empty All/Active/Scheduled/Completed views; no fabricated task results |
@@ -76,3 +76,5 @@ Before a later integration stage, implement and test authenticated pairing, an e
 The account disclosure supports Enter/Space to open, Tab through actions, Escape to close and restore focus, and outside-click dismissal. No credentials or tokens are stored or sent. Separate MultiList logout and Depop disconnect require separate future session integrations; neither is simulated. Nine browser tests currently cover the interface and built popup. Existing hosted legal pages and the landing site are untouched.
 
 Branding uses the supplied m+ logo restored as `apps/web/public/multilist-logo.png`, shared by the sidebar and favicon. Actions groups start collapsed on load and on return to Actions. The setup card opens the sidebar’s Depop Connection page (`/app/account`) and hides only when the App receives a verified Depop profile; the current entry point supplies none. No local flag can simulate a connection. The top-right Interface Preview button discloses current integration limitations.
+
+Home includes a welcome banner with the current browser-local date (for example, Tuesday, October 5). A future verified profile can supply a display name and photo; disconnected users see no fabricated identity. Page and action-section descriptions are accessible through circled info buttons with keyboard/Escape and outside-click dismissal. The shared footer and top bar use compact, consistent sizing. The favicon uses a separate rounded-corner version of the supplied mark.

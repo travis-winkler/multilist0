@@ -28,7 +28,7 @@ test("logo, favicon, setup navigation, breadcrumbs and preview disclosure", asyn
     ),
   ).toBe(true);
   const favicon = await page.locator('link[rel="icon"]').getAttribute("href");
-  expect(favicon).toBe("/app/multilist-logo.png");
+  expect(favicon).toBe("/app/multilist-favicon.png");
   const response = await page.request.get(favicon!);
   expect(response.status()).toBe(200);
   expect(response.headers()["content-type"]).toContain("image/png");
@@ -83,7 +83,7 @@ test("actions collapse on load and when returning to Actions", async ({
   await expect(
     page.getByRole("button", { name: "Bump Items", exact: true }),
   ).toBeVisible();
-  await page.getByRole("link", { name: "Overview", exact: true }).click();
+  await page.getByRole("link", { name: "Home", exact: true }).click();
   await page.getByRole("link", { name: "Actions", exact: true }).click();
   await expect(
     page.locator('.accordion-toggle[aria-expanded="false"]'),

@@ -1338,3 +1338,183 @@ dialog p {
     gap: 7px;
   }
 }
+
+/* Shared compact chrome, with the same footer height on every route. */
+.workspace {
+  display: flex;
+  flex-direction: column;
+}
+.topbar {
+  height: 68px;
+  min-height: 68px;
+  flex-shrink: 0;
+}
+main,
+main.overview-page {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  width: 100%;
+  min-height: 0;
+}
+.page-footer,
+.overview-page .page-footer {
+  min-height: 44px;
+  margin-top: auto;
+  padding: 12px 0;
+  align-items: center;
+}
+.page-footer {
+  margin-top: 28px;
+}
+main > .page-footer {
+  margin-top: auto;
+}
+main > .page-footer:before {
+  content: none;
+}
+main {
+  padding-bottom: 0;
+}
+main > :nth-last-child(2) {
+  margin-bottom: 28px;
+}
+.title-with-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.info-tip {
+  display: inline-flex;
+  position: relative;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+.info-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 19px;
+  height: 19px;
+  padding: 0;
+  border: 1px solid var(--taupe);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--taupe);
+  font:
+    600 12px Georgia,
+    serif;
+}
+.info-content {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: -100px;
+  z-index: 15;
+  width: min(270px, calc(100vw - 60px));
+  padding: 12px 15px;
+  border: 1px solid var(--tan);
+  border-radius: 8px;
+  background: var(--cream);
+  box-shadow: 0 8px 24px #36271f22;
+  color: var(--espresso);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.7;
+  letter-spacing: 0;
+}
+.action-section {
+  overflow: visible;
+}
+.action-heading {
+  display: flex;
+  align-items: center;
+  position: relative;
+  gap: 10px;
+  padding-right: 45px;
+}
+.action-heading .accordion-toggle {
+  width: auto;
+  padding-right: 0;
+}
+.action-heading .accordion-toggle > svg {
+  position: absolute;
+  right: 21px;
+}
+.welcome-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  border: 1px solid var(--tan);
+  border-radius: 12px;
+  background: #d9c5ad33;
+  padding: 27px;
+  margin-bottom: 24px;
+}
+.welcome-banner h1 {
+  font-size: clamp(24px, 2.4vw, 32px);
+}
+.welcome-profile {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  margin-top: 20px;
+}
+.welcome-profile img,
+.welcome-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  object-fit: cover;
+}
+.welcome-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--tan);
+}
+.welcome-profile strong {
+  display: block;
+  font-size: 15px;
+  font-weight: 500;
+}
+.welcome-profile p {
+  font-size: 12px;
+  margin-top: 4px;
+}
+.welcome-banner time {
+  color: var(--taupe);
+  font-size: 12px;
+  white-space: nowrap;
+}
+@media (max-width: 680px) {
+  .topbar {
+    height: auto;
+    min-height: 58px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+  .page-footer {
+    flex-direction: column;
+    gap: 6px;
+    padding: 9px 0;
+    min-height: 58px;
+  }
+  .welcome-banner {
+    align-items: flex-start;
+    flex-direction: column-reverse;
+    gap: 15px;
+    padding: 20px;
+  }
+  .welcome-banner time {
+    font-size: 11px;
+  }
+  .welcome-profile p {
+    font-size: 11px;
+  }
+}
+
+.info-content {
+  position: fixed;
+  width: min(270px, calc(100vw - 32px));
+}

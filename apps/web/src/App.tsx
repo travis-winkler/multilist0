@@ -1,3 +1,5 @@
+import { InfoTip } from "./components/InfoTip";
+import { WelcomeBanner } from "./components/WelcomeBanner";
 import { useEffect, useState } from "react";
 import { Icon, type IconName } from "./components/Icon";
 import { Dialog } from "./components/Dialog";
@@ -28,7 +30,7 @@ type Page =
   | "account"
   | "connection";
 const navigation: { id: Page; label: string; icon: IconName }[] = [
-  { id: "home", label: "Overview", icon: "home" },
+  { id: "home", label: "Home", icon: "home" },
   { id: "actions", label: "Actions", icon: "list" },
   { id: "tasks", label: "Tasks", icon: "tasks" },
   { id: "settings", label: "Settings", icon: "settings" },
@@ -262,8 +264,13 @@ export function App({
             <>
               <div className="page-heading">
                 <div>
-                  <h1>{titles[page][0]}</h1>
-                  <p>{titles[page][1]}</p>
+                  <div className="title-with-info">
+                    <h1>{titles[page][0]}</h1>
+                    <InfoTip
+                      title={titles[page][0]}
+                      description={titles[page][1]}
+                    />
+                  </div>
                 </div>
               </div>
             </>
@@ -278,34 +285,37 @@ export function App({
             <p role="alert">{settingsError || draftsError}</p>
           )}
           {page === "home" && (
-            <div className="summary-grid">
-              <Summary
-                label="DEPOP ACCOUNT"
-                value={
-                  verifiedDepopProfile
-                    ? `@${verifiedDepopProfile.username}`
-                    : "Not connected"
-                }
-                text={
-                  verifiedDepopProfile
-                    ? "Depop account connected"
-                    : "Your shop will appear here"
-                }
-                icon="account"
-              />
-              <Summary
-                label="ACTIVE TASKS"
-                value="0"
-                text="Nothing running right now"
-                icon="refresh"
-              />
-              <Summary
-                label="SCHEDULE DRAFTS"
-                value={String(drafts.length)}
-                text="Saved locally · not enabled"
-                icon="clock"
-              />
-            </div>
+            <>
+              <WelcomeBanner profile={verifiedDepopProfile} />
+              <div className="summary-grid">
+                <Summary
+                  label="DEPOP ACCOUNT"
+                  value={
+                    verifiedDepopProfile
+                      ? `@${verifiedDepopProfile.username}`
+                      : "Not connected"
+                  }
+                  text={
+                    verifiedDepopProfile
+                      ? "Depop account connected"
+                      : "Your shop will appear here"
+                  }
+                  icon="account"
+                />
+                <Summary
+                  label="ACTIVE TASKS"
+                  value="0"
+                  text="Nothing running right now"
+                  icon="refresh"
+                />
+                <Summary
+                  label="SCHEDULE DRAFTS"
+                  value={String(drafts.length)}
+                  text="Saved locally · not enabled"
+                  icon="clock"
+                />
+              </div>
+            </>
           )}
           {page === "actions" && (
             <section aria-label="Shop actions">
@@ -317,27 +327,29 @@ export function App({
                       className={`action-section ${open ? "expanded" : ""}`}
                       key={s.title}
                     >
-                      <button
-                        className="accordion-toggle"
-                        aria-expanded={open}
-                        aria-controls={`section-${s.title}`}
-                        onClick={() =>
-                          setExpanded(
-                            open
-                              ? expanded.filter((v) => v !== s.title)
-                              : [...expanded, s.title],
-                          )
-                        }
-                      >
-                        <span className="section-icon">
-                          <Icon name={s.icon} />
-                        </span>
-                        <span>
-                          <strong>{s.title}</strong>
-                          <small>{s.description}</small>
-                        </span>
-                        <Icon name="chevron" size={17} />
-                      </button>
+                      <div className="action-heading">
+                        <button
+                          className="accordion-toggle"
+                          aria-expanded={open}
+                          aria-controls={`section-${s.title}`}
+                          onClick={() =>
+                            setExpanded(
+                              open
+                                ? expanded.filter((v) => v !== s.title)
+                                : [...expanded, s.title],
+                            )
+                          }
+                        >
+                          <span className="section-icon">
+                            <Icon name={s.icon} />
+                          </span>
+                          <span>
+                            <strong>{s.title}</strong>
+                          </span>
+                          <Icon name="chevron" size={17} />
+                        </button>
+                        <InfoTip title={s.title} description={s.description} />
+                      </div>
                       <div id={`section-${s.title}`} hidden={!open}>
                         <div className="action-buttons">
                           {s.actions.map((a, i) => (
@@ -381,9 +393,13 @@ export function App({
               <div className="panel-heading">
                 <div>
                   <h2>
-                    Tasks <span className="badge">Idle</span>
+                    Tasks{" "}
+                    <InfoTip
+                      title="Tasks"
+                      description="No tasks have been submitted or executed."
+                    />{" "}
+                    <span className="badge">Idle</span>
                   </h2>
-                  <p>No tasks have been submitted or executed.</p>
                 </div>
                 <button
                   className="secondary-button"

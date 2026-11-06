@@ -3,7 +3,11 @@ import { Icon } from "./Icon";
 
 // Accept only verified profile data from a future authenticated integration.
 // Never populate this from localStorage, URL parameters, or sample data.
-export type DepopProfile = { username: string; avatarUrl: string | null };
+export type DepopProfile = {
+  username: string;
+  avatarUrl: string | null;
+  displayName?: string | null;
+};
 export function DepopAccount({
   profile,
   onMultiListLogout,

@@ -12,6 +12,7 @@
     }
   ],
   "rewrites": [
+    { "source": "/app/multilist-favicon.png", "destination": "/multilist-favicon.png" },
     {
       "source": "/app/multilist-logo.png",
       "destination": "/multilist-logo.png"

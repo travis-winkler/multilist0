@@ -38,7 +38,7 @@ test("prototype actions explain unavailable integration and navigate to connecti
   await expect(page.getByRole("dialog")).toContainText("cannot run yet");
   await page.keyboard.press("Escape");
   await expect(page.getByRole("dialog")).not.toBeVisible();
-  await page.getByRole("button", { name: "Likes Manage how" }).click();
+  await page.getByRole("button", { name: "Likes", exact: true }).click();
   await expect(
     page.getByRole("button", { name: "Like Products", exact: true }),
   ).toBeVisible();
