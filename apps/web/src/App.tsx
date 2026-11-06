@@ -275,6 +275,7 @@ export function App({
           </div>
         </header>
         <main
+          key={page}
           id="main-content"
           className={page === "home" ? "overview-page" : undefined}
         >

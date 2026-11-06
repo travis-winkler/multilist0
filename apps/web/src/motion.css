@@ -1,0 +1,179 @@
+/* Short, finite motion. No container transforms: info popovers use viewport coordinates. */
+@keyframes ml-reveal {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes ml-popover {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes ml-dialog {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes ml-action {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .app-shell {
+    --motion-fast: 150ms;
+    --motion-standard: 240ms;
+    --motion-ease: cubic-bezier(0.2, 0.7, 0.3, 1);
+  }
+  #main-content > :not(.page-footer) {
+    animation: ml-reveal var(--motion-standard) var(--motion-ease) both;
+  }
+  .home-metrics > .summary-card,
+  .analytics-page .summary-grid > .summary-card,
+  .analytics-two-grid > .summary-card,
+  .action-sections > .action-section {
+    animation: ml-reveal 260ms var(--motion-ease) both;
+  }
+  .home-metrics > :nth-child(2),
+  .analytics-page .summary-grid > :nth-child(2),
+  .analytics-two-grid > :nth-child(2),
+  .action-sections > :nth-child(2) {
+    animation-delay: 45ms;
+  }
+  .home-metrics > :nth-child(3),
+  .analytics-page .summary-grid > :nth-child(3),
+  .action-sections > :nth-child(3) {
+    animation-delay: 90ms;
+  }
+  .action-sections > :nth-child(4) {
+    animation-delay: 135ms;
+  }
+
+  .summary-card,
+  .action-section,
+  .setup-card {
+    transition:
+      border-color var(--motion-fast),
+      box-shadow var(--motion-standard) var(--motion-ease),
+      background-color var(--motion-fast);
+  }
+  .nav-item,
+  .tabs button,
+  .account-dropdown button,
+  .account-dropdown a,
+  .page-footer a,
+  .info-trigger,
+  .sales-period-select,
+  .field input,
+  .field select {
+    transition:
+      color var(--motion-fast),
+      background-color var(--motion-fast),
+      border-color var(--motion-fast),
+      box-shadow var(--motion-fast);
+  }
+  .primary-button,
+  .secondary-button,
+  .action-button,
+  .icon-button,
+  .connection-pill,
+  .preview-button,
+  .switch {
+    transition:
+      background-color var(--motion-fast),
+      border-color var(--motion-fast),
+      box-shadow var(--motion-fast),
+      transform var(--motion-fast) var(--motion-ease);
+  }
+  .primary-button:active,
+  .secondary-button:not(:disabled):active,
+  .action-button:active,
+  .icon-button:active,
+  .connection-pill:active {
+    transform: scale(0.985);
+  }
+  .switch span {
+    transition: transform 180ms var(--motion-ease);
+  }
+  .accordion-toggle > svg {
+    transition: transform 180ms var(--motion-ease);
+  }
+  .account-dropdown {
+    transform-origin: top right;
+    animation: ml-popover 160ms var(--motion-ease);
+  }
+  .info-content,
+  .notice {
+    animation: ml-reveal 160ms var(--motion-ease);
+  }
+  dialog[open] {
+    animation: ml-dialog 200ms var(--motion-ease);
+  }
+  dialog[open]::backdrop {
+    animation: ml-reveal 160ms var(--motion-ease);
+  }
+  .action-buttons {
+    animation: ml-reveal 160ms var(--motion-ease);
+  }
+  .action-buttons > .action-button {
+    animation: ml-action 180ms var(--motion-ease) both;
+  }
+  .action-buttons > :nth-child(2) {
+    animation-delay: 30ms;
+  }
+  .action-buttons > :nth-child(3) {
+    animation-delay: 60ms;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .summary-card:hover,
+    .action-section:hover,
+    .setup-card:hover {
+      border-color: var(--caramel);
+      box-shadow: 0 5px 16px #36271f0a;
+    }
+    .primary-button:hover,
+    .secondary-button:not(:disabled):hover,
+    .action-button:hover {
+      box-shadow: 0 3px 10px #36271f14;
+    }
+    .page-footer a:hover {
+      color: var(--espresso);
+    }
+  }
+}
+/* Include pseudo-elements so the modal backdrop also respects the app toggle. */
+.reduce-motion *,
+.reduce-motion *::before,
+.reduce-motion *::after,
+.reduce-motion dialog::backdrop {
+  animation: none !important;
+  transition: none !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after,
+  dialog::backdrop {
+    animation: none !important;
+    transition: none !important;
+  }
+}
