@@ -1671,3 +1671,68 @@ main > :nth-last-child(2) {
 .sales-count {
   font-size: 9px;
 }
+.weekly-sales {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.weekly-sales-heading,
+.analytics-chart-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+.sales-period-select {
+  background: var(--cream);
+  color: var(--espresso);
+  border: 1px solid var(--tan);
+  border-radius: 6px;
+  padding: 5px 7px;
+  font-size: 11px;
+  max-width: 95px;
+}
+.weekly-sales > strong {
+  font-size: 25px;
+  font-weight: 500;
+}
+.weekly-sales p,
+.weekly-sales > small {
+  font-size: 10px;
+  color: var(--taupe);
+}
+.weekly-days {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 5px;
+  list-style: none;
+  padding: 0;
+  margin: 4px 0;
+}
+.weekly-days li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  font-size: 9px;
+  color: var(--taupe);
+}
+.weekly-guide {
+  height: 26px;
+  width: 100%;
+  border-bottom: 1px solid var(--tan);
+}
+.analytics-chart-heading {
+  margin: 25px 0 15px;
+}
+@media (max-width: 680px) {
+  .weekly-sales-heading {
+    width: 100%;
+  }
+  .weekly-sales {
+    display: flex;
+  }
+  .weekly-sales > strong {
+    text-align: left;
+  }
+}

@@ -2,6 +2,69 @@ import { useEffect, useState } from "react";
 import { InfoTip } from "./InfoTip";
 import { Icon } from "./Icon";
 
+export const salesPeriods = [
+  "Week",
+  "Month",
+  "Q1",
+  "Q2",
+  "Q3",
+  "Q4",
+  "Year",
+] as const;
+export type SalesPeriod = (typeof salesPeriods)[number];
+export function readSalesPeriod(): SalesPeriod {
+  const value = new URLSearchParams(window.location.search).get("period");
+  return (
+    salesPeriods.find(
+      (period) => period.toLowerCase() === value?.toLowerCase(),
+    ) ?? "Month"
+  );
+}
+export function salesBuckets(date: Date, period: SalesPeriod): Date[] {
+  const year = date.getFullYear();
+  if (period === "Week") {
+    const monday = new Date(
+      year,
+      date.getMonth(),
+      date.getDate() - ((date.getDay() + 6) % 7),
+    );
+    return Array.from(
+      { length: 7 },
+      (_, i) =>
+        new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + i),
+    );
+  }
+  if (period === "Month")
+    return Array.from(
+      { length: daysInMonth(date) },
+      (_, i) => new Date(year, date.getMonth(), i + 1),
+    );
+  const start = period === "Year" ? 0 : (Number(period[1]) - 1) * 3;
+  return Array.from(
+    { length: period === "Year" ? 12 : 3 },
+    (_, i) => new Date(year, start + i, 1),
+  );
+}
+function PeriodSelect({
+  value,
+  onChange,
+}: {
+  value: SalesPeriod;
+  onChange: (period: SalesPeriod) => void;
+}) {
+  return (
+    <select
+      className="sales-period-select"
+      aria-label="Sales period"
+      value={value}
+      onChange={(e) => onChange(e.target.value as SalesPeriod)}
+    >
+      {salesPeriods.map((period) => (
+        <option key={period}>{period}</option>
+      ))}
+    </select>
+  );
+}
 export function daysInMonth(date: Date) {
   return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
 }
@@ -40,7 +103,9 @@ export function Metric({
 }
 export function SalesChart({
   dailyCounts,
+  period = "Month",
 }: {
+  period?: SalesPeriod;
   dailyCounts?: Readonly<Record<number, number>>;
 }) {
   const date = useCurrentDate();
@@ -48,12 +113,12 @@ export function SalesChart({
     month: "long",
     year: "numeric",
   }).format(date);
-  const days = Array.from(
-    { length: daysInMonth(date) },
-    (_, index) => index + 1,
-  );
+  const buckets = salesBuckets(date, period);
+  const days = buckets.map((_, index) => index + 1);
+  const rangeLabel =
+    period === "Month" ? month : `${period} · ${date.getFullYear()}`;
   function countFor(day: number): number | null {
-    const value = dailyCounts?.[day];
+    const value = period === "Month" ? dailyCounts?.[day] : undefined;
     return day <= date.getDate() &&
       value !== undefined &&
       Number.isInteger(value) &&
@@ -64,16 +129,16 @@ export function SalesChart({
   const hasData = days.some((day) => countFor(day) !== null);
   const max = Math.max(1, ...days.map((day) => countFor(day) ?? 0));
   return (
-    <section className="panel sales-panel" aria-label="Sales this month">
+    <section className="panel sales-panel" aria-label={`Sales: ${period}`}>
       <div className="sales-heading">
         <div className="title-with-info">
           <h2 id="sales-chart-title">Sales</h2>
           <InfoTip
             title="Daily sales"
-            description="Number of sales per calendar day this month, using your browser's local time zone. Sales records are not connected yet; missing data is never counted as zero."
+            description="Sales for the selected period in your browser’s time zone. Week starts Monday. Month uses daily bars; quarters and Year use monthly bars. Missing data is never counted as zero."
           />
         </div>
-        <span className="badge">{month}</span>
+        <span className="badge">{rangeLabel}</span>
       </div>
       <p className="chart-availability">
         {hasData
@@ -83,7 +148,7 @@ export function SalesChart({
       <div
         className="sales-scroll"
         role="region"
-        aria-label={`Daily sales chart for ${month}`}
+        aria-label={`Sales chart for ${rangeLabel}`}
         tabIndex={0}
       >
         <div className="sales-plot">
@@ -98,15 +163,29 @@ export function SalesChart({
             style={{
               gridTemplateColumns: `repeat(${days.length}, minmax(0, 1fr))`,
             }}
-            aria-label="Days this month"
+            aria-label={`Sales buckets for ${period}`}
           >
             {days.map((day) => {
               const count = countFor(day);
+              const bucket = buckets[day - 1];
+              const label = new Intl.DateTimeFormat(
+                "en-US",
+                period === "Week"
+                  ? { weekday: "short" }
+                  : period === "Month"
+                    ? { day: "numeric" }
+                    : { month: "short" },
+              ).format(bucket);
+              const fullLabel = new Intl.DateTimeFormat("en-US", {
+                month: "long",
+                day: "numeric",
+                year: "numeric",
+              }).format(bucket);
               return (
                 <li
                   key={day}
                   className="sales-day"
-                  aria-label={`${month.split(" ")[0]} ${day}: ${day > date.getDate() ? "Future date" : count === null ? "Data unavailable" : `${count} sales`}`}
+                  aria-label={`${fullLabel}: ${bucket > date ? "Future date" : count === null ? "Data unavailable" : `${count} sales`}`}
                   title={
                     count === null
                       ? `${day}: No data`
@@ -124,7 +203,7 @@ export function SalesChart({
                       </>
                     )}
                   </span>
-                  <span>{day}</span>
+                  <span>{label}</span>
                 </li>
               );
             })}
@@ -132,7 +211,7 @@ export function SalesChart({
           {!hasData && (
             <div className="chart-empty-label" aria-hidden="true">
               <Icon name="analytics" size={24} />
-              <span>Daily bars will appear when sales data is available</span>
+              <span>Bars will appear when sales data is available</span>
             </div>
           )}
         </div>
@@ -144,29 +223,65 @@ export function SalesChart({
     </section>
   );
 }
-export function HomeAnalytics() {
+export function HomeAnalytics({
+  onPeriod,
+}: {
+  onPeriod: (period: SalesPeriod) => void;
+}) {
+  const now = useCurrentDate();
   return (
-    <>
-      <div className="summary-grid">
-        <Metric
-          title="Revenue"
-          description="Total recorded sales revenue since installing MultiList, across all attributed and unattributed listings. Installation date, currency, and sales records have not been connected."
-        />
-        <Metric
-          title="Revenue with MultiList"
-          description="Revenue from listings verified as created through MultiList, since installation. No attribution is inferred from missing data."
-        />
-        <Metric
-          title="Sales"
-          description="Total number of sales since installing MultiList. The installation timestamp and sales records are not available yet."
-          count
-        />
-      </div>
-      <SalesChart />
-    </>
+    <div className="summary-grid home-metrics">
+      <Metric
+        title="Revenue"
+        description="Total recorded revenue since installation. Sales records are not connected."
+      />
+      <Metric
+        title="Revenue with MultiList"
+        description="Revenue from listings verified as created through MultiList, since installation."
+      />
+      <section className="summary-card weekly-sales" aria-label="Sales">
+        <div className="weekly-sales-heading">
+          <div className="metric-label">
+            <span className="eyebrow">Sales</span>
+            <InfoTip
+              title="Weekly sales"
+              description="Sales this week, Monday through Sunday. No sales records are connected yet. Select another period to view it in Analytics."
+            />
+          </div>
+          <PeriodSelect
+            value="Week"
+            onChange={(period) => {
+              if (period !== "Week") onPeriod(period);
+            }}
+          />
+        </div>
+        <strong aria-label="Data unavailable">—</strong>
+        <p>Count unavailable</p>
+        <ol className="weekly-days" aria-label="Sales this week">
+          {salesBuckets(now, "Week").map((day) => (
+            <li
+              key={day.toISOString()}
+              aria-label={`${day.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}: ${day > now ? "Future date" : "Data unavailable"}`}
+            >
+              <span className="weekly-guide" aria-hidden="true" />
+              <span>
+                {day.toLocaleDateString("en-US", { weekday: "short" })}
+              </span>
+            </li>
+          ))}
+        </ol>
+        <small>Sales data unavailable</small>
+      </section>
+    </div>
   );
 }
-export function AnalyticsPage() {
+export function AnalyticsPage({
+  period,
+  onPeriod,
+}: {
+  period: SalesPeriod;
+  onPeriod: (period: SalesPeriod) => void;
+}) {
   return (
     <div className="analytics-page">
       <div className="analytics-period">
@@ -228,7 +343,11 @@ export function AnalyticsPage() {
           count
         />
       </div>
-      <SalesChart />
+      <div className="analytics-chart-heading">
+        <h2>Sales by period</h2>
+        <PeriodSelect value={period} onChange={onPeriod} />
+      </div>
+      <SalesChart period={period} />
     </div>
   );
 }

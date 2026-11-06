@@ -1,4 +1,9 @@
-import { HomeAnalytics, AnalyticsPage } from "./components/Analytics";
+import {
+  HomeAnalytics,
+  AnalyticsPage,
+  readSalesPeriod,
+  type SalesPeriod,
+} from "./components/Analytics";
 import { InfoTip } from "./components/InfoTip";
 import { WelcomeBanner } from "./components/WelcomeBanner";
 import { useEffect, useState } from "react";
@@ -87,6 +92,8 @@ export function App({
   verifiedDepopProfile?: DepopProfile | null;
 }) {
   const [page, setPage] = useState<Page>(readPage);
+  const [analyticsPeriod, setAnalyticsPeriod] =
+    useState<SalesPeriod>(readSalesPeriod);
   const [menu, setMenu] = useState(false);
   const [settings, saveSettings, settingsError] = useStored(
     "multilist.settings.v1",
@@ -108,15 +115,21 @@ export function App({
     const listener = () => {
       const next = readPage();
       setPage(next);
+      setAnalyticsPeriod(readSalesPeriod());
       if (next === "actions") setExpanded([]);
     };
     window.addEventListener("popstate", listener);
     return () => window.removeEventListener("popstate", listener);
   }, []);
-  function go(next: Page) {
-    window.history.pushState({}, "", `/app/${next === "home" ? "" : next}`);
+  function go(next: Page, period?: SalesPeriod) {
+    window.history.pushState(
+      {},
+      "",
+      `/app/${next === "home" ? "" : next}${period ? `?period=${period.toLowerCase()}` : ""}`,
+    );
     if (next === "actions") setExpanded([]);
     setPage(next);
+    setAnalyticsPeriod(period ?? "Month");
     setMenu(false);
     setNotice("");
   }
@@ -294,10 +307,15 @@ export function App({
           {page === "home" && (
             <>
               <WelcomeBanner profile={verifiedDepopProfile} />
-              <HomeAnalytics />
+              <HomeAnalytics onPeriod={(period) => go("analytics", period)} />
             </>
           )}
-          {page === "analytics" && <AnalyticsPage />}
+          {page === "analytics" && (
+            <AnalyticsPage
+              period={analyticsPeriod}
+              onPeriod={(period) => go("analytics", period)}
+            />
+          )}
           {page === "actions" && (
             <section aria-label="Shop actions">
               <div className="action-sections">
