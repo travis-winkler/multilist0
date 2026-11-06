@@ -74,3 +74,5 @@ Before a later integration stage, implement and test authenticated pairing, an e
 - `tests`: browser workflow and extension tests
 
 The account disclosure supports Enter/Space to open, Tab through actions, Escape to close and restore focus, and outside-click dismissal. No credentials or tokens are stored or sent. Separate MultiList logout and Depop disconnect require separate future session integrations; neither is simulated. Nine browser tests currently cover the interface and built popup. Existing hosted legal pages and the landing site are untouched.
+
+Branding uses the supplied m+ logo restored as `apps/web/public/multilist-logo.png`, shared by the sidebar and favicon. Actions groups start collapsed on load and on return to Actions. The setup card opens the sidebar’s Depop Connection page (`/app/account`) and hides only when the App receives a verified Depop profile; the current entry point supplies none. No local flag can simulate a connection. The top-right Interface Preview button discloses current integration limitations.

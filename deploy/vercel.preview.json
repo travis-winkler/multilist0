@@ -5,11 +5,28 @@
   "buildCommand": "npm run build -w @multilist0/web",
   "outputDirectory": "apps/web/dist",
   "redirects": [
-    { "source": "/", "destination": "/app/", "permanent": false }
+    {
+      "source": "/",
+      "destination": "/app/",
+      "permanent": false
+    }
   ],
   "rewrites": [
-    { "source": "/app/assets/:path*", "destination": "/assets/:path*" },
-    { "source": "/app", "destination": "/index.html" },
-    { "source": "/app/:path*", "destination": "/index.html" }
+    {
+      "source": "/app/multilist-logo.png",
+      "destination": "/multilist-logo.png"
+    },
+    {
+      "source": "/app/assets/:path*",
+      "destination": "/assets/:path*"
+    },
+    {
+      "source": "/app",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/app/:path*",
+      "destination": "/index.html"
+    }
   ]
 }

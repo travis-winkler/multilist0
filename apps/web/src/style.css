@@ -1286,3 +1286,55 @@ dialog p {
   padding: 12px;
   border-radius: 6px;
 }
+
+.brand-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 9px;
+  object-fit: cover;
+  margin-right: 10px;
+}
+.setup-card {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  color: var(--cream);
+}
+.setup-card:hover {
+  background: #a987681a;
+}
+.setup-card .text-button {
+  justify-content: flex-start;
+}
+.topbar-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.topbar-controls .preview-button {
+  display: inline-flex;
+  background: transparent;
+  cursor: pointer;
+}
+@media (max-width: 680px) {
+  .topbar {
+    height: auto;
+    min-height: 65px;
+    flex-wrap: wrap;
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+  .topbar-controls {
+    margin-left: auto;
+    flex-wrap: wrap;
+    gap: 7px;
+  }
+  .breadcrumb > span:first-of-type,
+  .breadcrumb .slash {
+    display: inline;
+  }
+  .breadcrumb {
+    gap: 7px;
+  }
+}

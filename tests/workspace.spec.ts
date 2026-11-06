@@ -13,13 +13,24 @@ test("prototype actions explain unavailable integration and navigate to connecti
   await expect(page.locator("#main-content .right-column")).toHaveCount(0);
   await expect(page.locator(".topbar")).toBeVisible();
   await expect(page.locator(".page-footer")).toBeVisible();
-  await page.getByRole("link", {name: "Actions", exact: true}).click();
+  await page.getByRole("link", { name: "Actions", exact: true }).click();
   await expect(page).toHaveURL(/\/app\/actions$/);
   await page.reload();
-  await expect(page.getByRole("heading", { name: "Shop actions" })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Shop actions" }),
+  ).toBeVisible();
   for (const title of ["Listings", "Likes", "Followers", "Messages"]) {
-    await expect(page.locator(".accordion-toggle").filter({hasText: title})).toBeVisible();
+    await expect(
+      page.locator(".accordion-toggle").filter({ hasText: title }),
+    ).toBeVisible();
   }
+  await expect(
+    page.locator('.accordion-toggle[aria-expanded="false"]'),
+  ).toHaveCount(4);
+  await page
+    .locator(".accordion-toggle")
+    .filter({ hasText: "Listings" })
+    .click();
   await expect(
     page.getByRole("button", { name: "Bump Items", exact: true }),
   ).toBeVisible();
@@ -31,7 +42,12 @@ test("prototype actions explain unavailable integration and navigate to connecti
   await expect(
     page.getByRole("button", { name: "Like Products", exact: true }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "View status", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Interface Preview", exact: true })
+    .click();
+  await expect(page.getByRole("dialog")).toContainText("not implemented");
+  await page.keyboard.press("Escape");
+  await page.goto("/app/connection");
   await expect(page).toHaveURL(/\/app\/connection$/);
   await expect(
     page.getByRole("heading", { name: "What works today" }),

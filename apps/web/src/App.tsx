@@ -9,7 +9,8 @@ import {
   type Draft,
 } from "./model";
 
-import { DepopAccount } from "./components/DepopAccount";
+import { DepopSetupCard } from "./components/DepopSetupCard";
+import { DepopAccount, type DepopProfile } from "./components/DepopAccount";
 import { Connectivity } from "./components/Connectivity";
 import {
   Footer,
@@ -31,7 +32,7 @@ const navigation: { id: Page; label: string; icon: IconName }[] = [
   { id: "actions", label: "Actions", icon: "list" },
   { id: "tasks", label: "Tasks", icon: "tasks" },
   { id: "settings", label: "Settings", icon: "settings" },
-  { id: "account", label: "Account", icon: "account" },
+  { id: "account", label: "Depop Connection", icon: "account" },
 ];
 const sections: {
   title: string;
@@ -74,7 +75,12 @@ function readPage(): Page {
     ? (part as Page)
     : "home";
 }
-export function App() {
+// Only a future verified integration may supply this profile. No browser-local account data is trusted.
+export function App({
+  verifiedDepopProfile = null,
+}: {
+  verifiedDepopProfile?: DepopProfile | null;
+}) {
   const [page, setPage] = useState<Page>(readPage);
   const [menu, setMenu] = useState(false);
   const [settings, saveSettings, settingsError] = useStored(
@@ -88,18 +94,23 @@ export function App() {
     isDrafts,
   );
   const [modal, setModal] = useState<string | null>(null);
-  const [expanded, setExpanded] = useState<string[]>(["Listings"]);
+  const [expanded, setExpanded] = useState<string[]>([]);
   const [filter, setFilter] = useState("All");
   const [action, setAction] = useState("Auto Bump Items");
   const [interval, setInterval] = useState(1);
   const [notice, setNotice] = useState("");
   useEffect(() => {
-    const listener = () => setPage(readPage());
+    const listener = () => {
+      const next = readPage();
+      setPage(next);
+      if (next === "actions") setExpanded([]);
+    };
     window.addEventListener("popstate", listener);
     return () => window.removeEventListener("popstate", listener);
   }, []);
   function go(next: Page) {
     window.history.pushState({}, "", `/app/${next === "home" ? "" : next}`);
+    if (next === "actions") setExpanded([]);
     setPage(next);
     setMenu(false);
     setNotice("");
@@ -159,9 +170,11 @@ export function App() {
             go("home");
           }}
         >
-          <span className="brand-mark">
-            m<span>l</span>
-          </span>
+          <img
+            className="brand-logo"
+            src={`${import.meta.env.BASE_URL}multilist-logo.png`}
+            alt=""
+          />
           MultiList<span className="brand-dot">.</span>
         </a>
         <div className="workspace-label">SELLER WORKSPACE</div>
@@ -184,16 +197,10 @@ export function App() {
           ))}
         </nav>
         <div className="sidebar-bottom">
-          <div className="extension-mini">
-            <span className="mini-icon">
-              <Icon name="link" />
-            </span>
-            <h3>Your browser companion</h3>
-            <p>Connect your shop through the MultiList Chrome extension.</p>
-            <button className="text-button" onClick={() => go("connection")}>
-              View connection <Icon name="arrow" size={16} />
-            </button>
-          </div>
+          <DepopSetupCard
+            connected={verifiedDepopProfile !== null}
+            onConnect={() => go("account")}
+          />
           <button
             className="help-link"
             onClick={() => setModal("Help & documentation")}
@@ -224,7 +231,7 @@ export function App() {
             >
               <Icon name="menu" />
             </button>
-            <span>Workspace</span>
+            <span>MultiList</span>
             <span className="slash">/</span>
             <strong>
               {page === "connection"
@@ -233,11 +240,19 @@ export function App() {
                   footerLinks.find((n) => n.id === page)?.label)}
             </strong>
           </div>
-          <DepopAccount
-            profile={null}
-            onMultiListLogout={() => setModal("Log out of MultiList")}
-            onDepopLogout={() => setModal("Log out of Depop")}
-          />
+          <div className="topbar-controls">
+            <button
+              className="stage-tag preview-button"
+              onClick={() => setModal("Interface Preview")}
+            >
+              Interface Preview
+            </button>
+            <DepopAccount
+              profile={verifiedDepopProfile}
+              onMultiListLogout={() => setModal("Log out of MultiList")}
+              onDepopLogout={() => setModal("Log out of Depop")}
+            />
+          </div>
         </header>
         <main
           id="main-content"
@@ -250,17 +265,6 @@ export function App() {
                   <h1>{titles[page][0]}</h1>
                   <p>{titles[page][1]}</p>
                 </div>
-                <span className="stage-tag">Interface preview</span>
-              </div>
-              <div className="preview-note">
-                <Icon name="link" size={17} />
-                <span>
-                  You're exploring the interface. Depop connection and task
-                  execution are not available yet.
-                </span>
-                <button onClick={() => go("connection")}>
-                  View status <Icon name="arrow" size={15} />
-                </button>
               </div>
             </>
           )}
@@ -277,8 +281,16 @@ export function App() {
             <div className="summary-grid">
               <Summary
                 label="DEPOP ACCOUNT"
-                value="Not connected"
-                text="Your shop will appear here"
+                value={
+                  verifiedDepopProfile
+                    ? `@${verifiedDepopProfile.username}`
+                    : "Not connected"
+                }
+                text={
+                  verifiedDepopProfile
+                    ? "Depop account connected"
+                    : "Your shop will appear here"
+                }
                 icon="account"
               />
               <Summary
@@ -697,6 +709,13 @@ export function App() {
                 </button>
               </div>
             </>
+          ) : modal === "Interface Preview" ? (
+            <p>
+              This is an interface preview. Authentication, Depop access, secure
+              extension pairing, and task execution are not implemented.
+              Settings and draft schedules are browser-local; drafts never
+              execute.
+            </p>
           ) : modal === "Log out of MultiList" ? (
             <p>
               MultiList authentication is not implemented. You are not signed
