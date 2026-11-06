@@ -1,4 +1,5 @@
 export type IconName =
+  | "analytics"
   | "home"
   | "tasks"
   | "settings"
@@ -17,6 +18,7 @@ export type IconName =
   | "menu"
   | "external";
 const paths: Record<IconName, string> = {
+  analytics: "M3 3v18h18M7 16v-4m5 4V8m5 8V5",
   home: "m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1Z",
   tasks: "M8 3h12v18H4V3h4m0 5h1m3 0h5M8 12h1m3 0h5M8 16h1m3 0h5",
   settings:

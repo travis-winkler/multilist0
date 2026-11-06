@@ -1518,3 +1518,156 @@ main > :nth-last-child(2) {
   position: fixed;
   width: min(270px, calc(100vw - 32px));
 }
+
+.analytics-metric {
+  min-width: 0;
+}
+.metric-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.metric-label .info-trigger {
+  width: 16px;
+  height: 16px;
+  font-size: 10px;
+}
+.analytics-metric .eyebrow {
+  line-height: 1.7;
+}
+.summary-card.analytics-metric strong {
+  font-size: 25px;
+  margin-top: 13px;
+}
+.analytics-period {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 12px;
+}
+.analytics-note {
+  margin: 18px 0 26px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--tan);
+}
+.analytics-two-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 17px;
+  margin-bottom: 28px;
+}
+.analytics-sales-total {
+  margin-bottom: 28px;
+}
+.sales-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.chart-availability {
+  font-size: 12px;
+  margin: 15px 0;
+}
+.sales-scroll {
+  overflow-x: auto;
+  border-radius: 4px;
+}
+.sales-plot {
+  min-width: 640px;
+  height: 240px;
+  position: relative;
+}
+.sales-grid {
+  position: absolute;
+  inset: 12px 0 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  pointer-events: none;
+}
+.sales-grid span {
+  border-top: 1px dashed var(--tan);
+}
+.sales-days {
+  position: absolute;
+  inset: 12px 0 0;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 5px;
+}
+.sales-day {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 10px;
+  color: var(--taupe);
+  padding-bottom: 2px;
+}
+.sales-lane {
+  height: 100%;
+  width: 100%;
+  border-bottom: 1px solid var(--tan);
+}
+.chart-empty-label {
+  position: absolute;
+  left: 50%;
+  top: 44%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--cream);
+  padding: 14px;
+  border: 1px solid var(--tan);
+  border-radius: 8px;
+  font-size: 12px;
+  color: var(--taupe);
+}
+.chart-caption {
+  font-size: 10px;
+  margin-top: 16px;
+}
+@media (max-width: 680px) {
+  .analytics-two-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .analytics-metric .metric-label {
+    grid-row: 1;
+    grid-column: 1;
+  }
+  .sales-panel {
+    padding: 16px;
+  }
+  .sales-heading {
+    flex-wrap: wrap;
+  }
+  .analytics-metric .info-content {
+    text-align: left;
+  }
+}
+
+.sales-lane {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 3px;
+}
+.sales-bar {
+  display: block;
+  width: min(20px, 85%);
+  background: var(--caramel);
+  border-radius: 4px 4px 0 0;
+  min-height: 0;
+}
+.sales-count {
+  font-size: 9px;
+}

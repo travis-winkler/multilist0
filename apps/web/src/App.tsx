@@ -1,3 +1,4 @@
+import { HomeAnalytics, AnalyticsPage } from "./components/Analytics";
 import { InfoTip } from "./components/InfoTip";
 import { WelcomeBanner } from "./components/WelcomeBanner";
 import { useEffect, useState } from "react";
@@ -24,6 +25,7 @@ import {
 type Page =
   | FooterPage
   | "home"
+  | "analytics"
   | "actions"
   | "tasks"
   | "settings"
@@ -31,6 +33,7 @@ type Page =
   | "connection";
 const navigation: { id: Page; label: string; icon: IconName }[] = [
   { id: "home", label: "Home", icon: "home" },
+  { id: "analytics", label: "Analytics", icon: "analytics" },
   { id: "actions", label: "Actions", icon: "list" },
   { id: "tasks", label: "Tasks", icon: "tasks" },
   { id: "settings", label: "Settings", icon: "settings" },
@@ -141,6 +144,10 @@ export function App({
     documentation: ["Documentation", "Development and setup instructions."],
     privacy: ["Privacy Policy", "Unpublished placeholder"],
     terms: ["Terms & Conditions", "Unpublished placeholder"],
+    analytics: [
+      "Analytics",
+      "Revenue, listings, and sales since installing MultiList.",
+    ],
     actions: ["Shop actions", "Your everyday toolkit for managing your shop."],
     tasks: [
       "Your task activity",
@@ -287,36 +294,10 @@ export function App({
           {page === "home" && (
             <>
               <WelcomeBanner profile={verifiedDepopProfile} />
-              <div className="summary-grid">
-                <Summary
-                  label="DEPOP ACCOUNT"
-                  value={
-                    verifiedDepopProfile
-                      ? `@${verifiedDepopProfile.username}`
-                      : "Not connected"
-                  }
-                  text={
-                    verifiedDepopProfile
-                      ? "Depop account connected"
-                      : "Your shop will appear here"
-                  }
-                  icon="account"
-                />
-                <Summary
-                  label="ACTIVE TASKS"
-                  value="0"
-                  text="Nothing running right now"
-                  icon="refresh"
-                />
-                <Summary
-                  label="SCHEDULE DRAFTS"
-                  value={String(drafts.length)}
-                  text="Saved locally · not enabled"
-                  icon="clock"
-                />
-              </div>
+              <HomeAnalytics />
             </>
           )}
+          {page === "analytics" && <AnalyticsPage />}
           {page === "actions" && (
             <section aria-label="Shop actions">
               <div className="action-sections">
@@ -788,30 +769,6 @@ export function App({
         </Dialog>
       )}
     </div>
-  );
-}
-function Summary({
-  label,
-  value,
-  text,
-  icon,
-}: {
-  label: string;
-  value: string;
-  text: string;
-  icon: IconName;
-}) {
-  return (
-    <section className="summary-card">
-      <div>
-        <span className="eyebrow">{label}</span>
-        <strong>{value}</strong>
-        <p>{text}</p>
-      </div>
-      <span className="summary-icon">
-        <Icon name={icon} size={21} />
-      </span>
-    </section>
   );
 }
 function Empty({
